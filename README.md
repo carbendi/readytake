@@ -43,6 +43,10 @@ On iPhone, open the published link in Safari, allow camera/microphone when asked
 - A real-time rendered sequence download using canvas capture, Web Audio mixing and the browser’s supported encoder.
 - A selected-originals ZIP and JSON edit manifest. Individual source downloads stay available if a ZIP is too large.
 
+## Visual timeline
+
+Open **Clips & edit** to see text/logo, B-roll, A-roll, voiceover, linked main dialogue and music tracks. Drag A-roll to reorder, drag B-roll/voiceover to position, or drag video edges to trim. Tap a block for exact numeric edits and Earlier/Later buttons. Zoom and horizontal scrolling work for longer edits. Select a time and use **B-roll at playhead** to record/import a cutaway there. Changes persist locally and feed the existing render pipeline. Music loops over the edit; main dialogue follows A-roll. Source preview does not mix overlays/audio; render to see the complete result. Touch interactions have not been verified on a physical iPhone.
+
 ## What is not in this build
 
 - Native Apple AI, external AI connections, brief interpretation, AI script generation, automatic subtitles or AI take selection.
@@ -86,12 +90,13 @@ With Node 20+ installed, run `npm test` for the logic and mocked capture/storage
 
 ## Validation
 
-18 automated tests passed, covering LUT parsing/axis mapping, SRT timing, trimming/order, audio priority and recovery, output dimensions, MIME selection, speech matching, escaped text, ZIP integrity, DOM references a mocked camera-record-save lifecycle, and microphone-only voiceover recording/cleanup. All application JavaScript passed syntax checks. Camera hardware, browser playback/encoding and visual rendering have not been verified on a real iPhone or through a browser in this environment. Start with the five-second test above.
+22 automated tests passed, covering LUT parsing/axis mapping, SRT timing, trimming/order, audio priority and recovery, output dimensions, MIME selection, speech matching, escaped text, ZIP integrity, DOM references a mocked camera-record-save lifecycle, and microphone-only voiceover recording/cleanup. All application JavaScript passed syntax checks. Camera hardware, browser playback/encoding and visual rendering have not been verified on a real iPhone or through a browser in this environment. Start with the five-second test above.
 
 ## Source map
 
 - `index.html`, `styles.css`: responsive UI.
 - `app.js`: interactions, capture, kits, clips and prompter.
+- `timeline.js`: multitrack display, source trimming, reordering and placement controls.
 - `core.js`: parsing, timing, audio-priority decisions and pure helpers.
 - `renderer.js`: GPU LUT preview and canvas graphics.
 - `exporter.js`: real-time sequence rendering and audio mixing.
