@@ -49,7 +49,7 @@ The Camera page shows the viewfinder and recording controls. Open **Settings** f
 
 ## Visual timeline
 
-Open **Your timeline** in navigation, or the **Your timeline** card in Clips & edit, for the dedicated editor with its preview above text/logo, B-roll, A-roll, voiceover, linked main dialogue and music tracks. Audio imports, voice recording and mixing are on their own **Audio** page. Drag A-roll to reorder, drag B-roll/voiceover to position, or drag video edges to trim. Tap a block for exact numeric edits and Earlier/Later buttons. The timeline fits the page by default. Horizontal zoom expands timing for finer edits; Fit returns to the full sequence. Track height adjusts vertical scale globally, while each track has individual −/+ height buttons. Horizontal scrolling stays inside the timeline when zoomed in. Select a time and use **B-roll at playhead** to record/import a cutaway there. Changes persist locally and feed the existing render pipeline. Music loops over the edit; main dialogue follows A-roll. Source preview does not mix overlays/audio; render to see the complete result. Touch interactions have not been verified on a physical iPhone.
+Open **Your timeline** in navigation, or the **Your timeline** card in Clips & edit, for the dedicated editor with its preview above text/logo, B-roll, A-roll, voiceover, linked main dialogue and music tracks. Audio imports, voice recording and mixing are on their own **Audio** page. Drag A-roll to reorder, drag B-roll/voiceover to position, or drag video edges to trim. Tap a block for exact numeric edits and Earlier/Later buttons. The timeline fits the page by default. Horizontal zoom expands timing for finer edits; Fit returns to the full sequence. Track height adjusts vertical scale globally, while each track has individual −/+ height buttons. Horizontal scrolling stays inside the timeline when zoomed in. Select a time and use **B-roll at playhead** to record/import a cutaway there. Changes persist locally and feed the existing render pipeline. Music loops over the edit; main dialogue follows A-roll. **Play full edit** previews B-roll, colour, captions/logo and ducked dialogue/voiceover/music together. Use the preview scrubber or click an empty timeline lane/ruler to inspect a composited frame. **Preview source** remains available for checking an original clip. Preview uses a lower resolution; export uses the selected output resolution. Touch interactions have not been verified on a physical iPhone.
 
 ## What is not in this build
 
@@ -59,7 +59,7 @@ Open **Your timeline** in navigation, or the **Your timeline** card in Clips & e
 - Native shutter angle/ISO/white-balance controls on browsers that do not expose them.
 - Guaranteed 4K capture, 25/50 fps, MP4 output, HDR/10-bit rendering, background recording or background rendering.
 - Frame-accurate offline export. This version records real-time browser playback; transitions/seeks can have small timing differences. The canvas render targets 30 fps; it does not inherit a requested 25/50 fps recording setting.
-- Rendered sequence playback with overlays inside the editor: the clip player previews raw trimmed footage; B-roll, LUTs, captions, logo and mixed audio appear in the rendered output.
+- Guaranteed seamless playback on every device: loading a new source can briefly pause the preview at cuts or B-roll transitions. Physical iPhone testing is still needed.
 
 ## Storage and privacy
 
@@ -94,7 +94,7 @@ With Node 20+ installed, run `npm test` for the logic and mocked capture/storage
 
 ## Validation
 
-23 automated tests passed, covering LUT parsing/axis mapping, SRT timing, trimming/order, audio priority and recovery, output dimensions, MIME selection, speech matching, escaped text, ZIP integrity, DOM references a mocked camera-record-save lifecycle, and microphone-only voiceover recording/cleanup. All application JavaScript passed syntax checks. Camera hardware, browser playback/encoding and visual rendering have not been verified on a real iPhone or through a browser in this environment. Start with the five-second test above.
+28 automated tests passed, covering LUT parsing/axis mapping, SRT timing, trimming/order, audio priority and recovery, output dimensions, MIME selection, speech matching, escaped text, ZIP integrity, DOM references a mocked camera-record-save lifecycle, and microphone-only voiceover recording/cleanup. All application JavaScript passed syntax checks. Camera hardware, browser playback/encoding and visual rendering have not been verified on a real iPhone or through a browser in this environment. Start with the five-second test above.
 
 ## Source map
 
@@ -103,7 +103,7 @@ With Node 20+ installed, run `npm test` for the logic and mocked capture/storage
 - `timeline.js`: multitrack display, source trimming, reordering and placement controls.
 - `core.js`: parsing, timing, audio-priority decisions and pure helpers.
 - `renderer.js`: GPU LUT preview and canvas graphics.
-- `exporter.js`: real-time sequence rendering and audio mixing.
+- `preview.js`, `composition.js`: live timeline playback, seekable composite preview and shared export graphics.\n- `exporter.js`: real-time sequence rendering and audio mixing.
 - `storage.js`: IndexedDB media/assets/settings.
 - `zip.js`: dependency-free ZIP downloads.
 - `tests/`: automated tests.
