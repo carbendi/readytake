@@ -43,6 +43,10 @@ On iPhone, open the published link in Safari, allow camera/microphone when asked
 - A real-time rendered sequence download using canvas capture, Web Audio mixing and the browser’s supported encoder.
 - A selected-originals ZIP and JSON edit manifest. Individual source downloads stay available if a ZIP is too large.
 
+## Camera screen
+
+The Camera page shows the viewfinder and recording controls. Open **Settings** for brand kit selection, capture setup, LUTs, script/prompter controls and framing guides. **Done** saves settings to the current kit and returns to shooting. A master Guides toggle and individual thirds/social-safe-area controls affect preview only. Settings are blocked during recording.
+
 ## Visual timeline
 
 Open **Your timeline** in navigation, or the **Your timeline** card in Clips & edit, for the dedicated editor with its preview above text/logo, B-roll, A-roll, voiceover, linked main dialogue and music tracks. Audio imports, voice recording and mixing are on their own **Audio** page. Drag A-roll to reorder, drag B-roll/voiceover to position, or drag video edges to trim. Tap a block for exact numeric edits and Earlier/Later buttons. The timeline fits the page by default. Horizontal zoom expands timing for finer edits; Fit returns to the full sequence. Track height adjusts vertical scale globally, while each track has individual −/+ height buttons. Horizontal scrolling stays inside the timeline when zoomed in. Select a time and use **B-roll at playhead** to record/import a cutaway there. Changes persist locally and feed the existing render pipeline. Music loops over the edit; main dialogue follows A-roll. Source preview does not mix overlays/audio; render to see the complete result. Touch interactions have not been verified on a physical iPhone.
