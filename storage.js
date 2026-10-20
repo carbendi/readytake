@@ -1,0 +1,6 @@
+let dbPromise;
+export function database(){return dbPromise??=new Promise((resolve,reject)=>{let r=indexedDB.open('readytake-working-v1',1);r.onupgradeneeded=()=>r.result.createObjectStore('items',{keyPath:'id'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+export async function put(item){let db=await database();return new Promise((resolve,reject)=>{let tx=db.transaction('items','readwrite');tx.objectStore('items').put(item);tx.oncomplete=()=>resolve(item);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||Error('Storage write aborted.'));});}
+export async function get(id){let db=await database();return new Promise((resolve,reject)=>{let r=db.transaction('items').objectStore('items').get(id);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+export async function all(){let db=await database();return new Promise((resolve,reject)=>{let r=db.transaction('items').objectStore('items').getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+export async function remove(id){let db=await database();return new Promise((resolve,reject)=>{let tx=db.transaction('items','readwrite');tx.objectStore('items').delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});}

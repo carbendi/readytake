@@ -1,0 +1,10 @@
+{
+  "name": "readytake-working-prototype",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules --test tests/*.test.js",
+    "start": "python3 -m http.server 8080"
+  }
+}
