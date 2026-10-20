@@ -37,7 +37,7 @@ On iPhone, open the published link in Safari, allow camera/microphone when asked
 - Experimental browser speech dictation and script-following where `SpeechRecognition` is exposed. The browser vendor may process speech online. This is **not** Apple Foundation Models or guaranteed on-device speech recognition.
 - Video import, clip selection, trim in/out, reordering and original downloads.
 - B-roll import or camera recording, positioned at a time in the full sequence and muted over the original dialogue.
-- Imported voiceover and looping background music, with voiceover start offset.
+- Record voiceover with your phone microphone, preview/retake/save/download the take, or import a voiceover file. The script can stay visible while recording. Voiceover start offset and looping imported background music are supported.
 - Speech-level-driven audio ducking while rendering: voiceover lowers main voice, and either voice lowers music. Independent switches, adjustable reductions, smooth gain recovery. Threshold is a basic RMS heuristic; noisy audio may cause false triggers. Refine by listening to the rendered result.
 - Manual captions or timed SRT import, custom font, caption colour/size, PNG logo placement/size, all composited during export.
 - A real-time rendered sequence download using canvas capture, Web Audio mixing and the browser’s supported encoder.
@@ -86,7 +86,7 @@ With Node 20+ installed, run `npm test` for the logic and mocked capture/storage
 
 ## Validation
 
-12 automated tests passed for LUT parsing/axis mapping, SRT timing, trimming/order, audio priority and recovery, output dimensions, MIME selection, speech matching, escaped text, ZIP integrity, DOM references and a mocked camera-record-save lifecycle. All application JavaScript passed syntax checks. Camera hardware, browser playback/encoding and visual rendering have not been verified on a real iPhone or through a browser in this environment. Start with the five-second test above.
+18 automated tests passed, covering LUT parsing/axis mapping, SRT timing, trimming/order, audio priority and recovery, output dimensions, MIME selection, speech matching, escaped text, ZIP integrity, DOM references a mocked camera-record-save lifecycle, and microphone-only voiceover recording/cleanup. All application JavaScript passed syntax checks. Camera hardware, browser playback/encoding and visual rendering have not been verified on a real iPhone or through a browser in this environment. Start with the five-second test above.
 
 ## Source map
 
