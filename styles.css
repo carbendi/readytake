@@ -136,3 +136,12 @@ body>header .icon-button{width:22px;height:22px;line-height:20px;font-size:11px}
 #kits-list.kit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 #kits-list .kit-card{min-width:0}#kits-list .kit-card h2{overflow-wrap:anywhere}
 @media(max-width:600px){#kits-list.kit-grid{gap:12px}#kits-list .kit-card{padding:14px}#kits-list .kit-card h2{font-size:17px;margin-bottom:12px}#kits-list .kit-card .mark{width:56px;height:56px;margin-bottom:12px}#kits-list .kit-card button{padding:6px 8px;font-size:9px}#kits-list .kit-card .hint{font-size:9px}}
+
+#kits-list .kit-card{position:relative}
+#kits-list .kit-card .kit-actions-button{position:absolute;right:10px;top:9px;margin:0;padding:0 7px;font-size:21px;line-height:26px;min-width:30px}
+.kit-action-options{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.kit-action-options button{flex:1;min-height:40px}
+button.danger-button{color:#a52f26;background:#f9e7df;border-color:#ddb4a6}
+#recently-deleted-kits{font-size:10px;margin:0 0 16px}
+
+#kits-list .kit-card{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
