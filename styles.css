@@ -25,3 +25,10 @@ nav{overflow-x:auto}nav>button{flex-shrink:0}.timeline-entry{display:flex;align-
 #page-clips .compact-clip .button-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
 .clip-adjustments summary{font-size:10px;color:#6c805d;cursor:pointer;padding:3px 0}.clip-adjustments .row{display:flex;gap:8px;margin:6px 0}.clip-adjustments label{font-size:9px;margin:0;max-width:100px}.clip-adjustments input{padding:5px!important;margin-top:3px!important}
 @media(max-width:600px){#page-clips .compact-clip{grid-template-columns:68px minmax(0,1fr);gap:8px;padding:8px}.clip-thumb{width:68px;height:80px}#page-clips .clips-library .panel{padding:12px}#page-clips .compact-clip .between{flex-wrap:nowrap;gap:4px}}
+
+/* Unused tracks remain accessible without occupying the edit area. */
+#timeline .tl-row-collapsed .tl-track-name{flex-direction:row;align-items:center;gap:3px;padding-top:1px;padding-bottom:1px}
+#timeline .tl-row-collapsed .tl-track-name>span:first-child{flex:1;min-width:0;font-size:8px}
+#timeline .tl-row-collapsed .tl-height-buttons{flex-shrink:0}
+#timeline .tl-row-collapsed .tl-height-buttons button[data-step="-8"]{display:none}
+#timeline .tl-row-collapsed .tl-empty{font-size:8px;opacity:.6}
