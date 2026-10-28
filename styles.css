@@ -32,3 +32,14 @@ nav{overflow-x:auto}nav>button{flex-shrink:0}.timeline-entry{display:flex;align-
 #timeline .tl-row-collapsed .tl-height-buttons{flex-shrink:0}
 #timeline .tl-row-collapsed .tl-height-buttons button[data-step="-8"]{display:none}
 #timeline .tl-row-collapsed .tl-empty{font-size:8px;opacity:.6}
+
+dialog.clip-editor{width:min(720px,calc(100% - 24px));max-width:720px;max-height:92dvh;overflow:auto;padding:20px}
+.clip-editor h2{margin:0}.clip-editor .filename{font-size:10px;overflow-wrap:anywhere}
+.clip-editor video{display:block;width:100%;height:clamp(150px,35vh,360px);object-fit:contain;background:#15241a;border-radius:8px}
+.clip-editor-fields{display:flex;flex-wrap:wrap;gap:12px}.clip-editor-fields label{flex:1;min-width:120px;margin-bottom:12px}
+.clip-editor-fields button{margin-top:5px;font-size:10px;padding:5px 8px}
+.clip-marker{display:flex;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid var(--line)}
+.clip-marker>input{flex:1;min-width:0}.clip-marker button{padding:5px 7px;font-size:10px;white-space:nowrap}
+.clip-marker-count{align-self:center;font-size:9px;color:#708847;padding:3px}
+.clip-editor .button-row{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+@media(max-width:500px){.clip-marker{flex-wrap:wrap}.clip-marker .hint{font-size:8px}.clip-editor-fields label{min-width:100px}dialog.clip-editor{padding:14px}}
