@@ -50,3 +50,7 @@ dialog.clip-editor{width:min(720px,calc(100% - 24px));max-width:720px;max-height
 .clip-thumb .thumb-fallback{position:absolute;inset:0;display:grid;place-items:center}
 .clip-thumb img{position:absolute;inset:0;display:block}
 @media(max-width:600px){#page-clips .compact-clip{grid-template-columns:96px minmax(0,1fr)}#page-clips .compact-clip .clip-thumb{width:96px;height:96px}}
+
+#page-camera #record-marker{color:#f4d64f;border:1px solid #a78e32;background:#3c3c23;font-weight:700}
+.clip-marker.marker-yellow{border-left:4px solid #e4c541}.clip-marker.marker-green{border-left:4px solid #68a450}.clip-marker.marker-red{border-left:4px solid #cf6057}.clip-marker{padding-left:7px;flex-wrap:wrap}
+.clip-marker>select{width:135px;font-size:10px;padding:5px}.clip-marker .marker-end{font-size:9px;margin:0;width:110px}.clip-marker .marker-end input{padding:5px;margin-top:2px}.clip-editor [data-marker-color]{width:auto;font-size:11px}
