@@ -82,3 +82,6 @@ dialog.clip-editor{width:min(720px,calc(100% - 24px));max-width:720px;max-height
 #timeline button.tl-playhead::before{left:7px;top:0;width:10px;height:10px}
 #timeline button.tl-playhead::after{content:'';position:absolute;left:11px;top:9px;bottom:0;width:2px;background:#b15e45;pointer-events:none}
 #timeline .tl-ruler-time{touch-action:none}#timeline .tl-ruler-time>span{pointer-events:none}
+
+.timeline-mini-transport{display:flex;justify-content:center;padding-top:5px}
+#page-timeline .timeline-mini-transport #preview-sequence{width:62px;min-height:26px;margin:0;padding:3px 7px;font-size:10px;line-height:18px;border-radius:5px;background:#f5f8ef;color:#304c32;border:1px solid #becdad}
