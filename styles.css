@@ -43,3 +43,10 @@ dialog.clip-editor{width:min(720px,calc(100% - 24px));max-width:720px;max-height
 .clip-marker-count{align-self:center;font-size:9px;color:#708847;padding:3px}
 .clip-editor .button-row{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
 @media(max-width:500px){.clip-marker{flex-wrap:wrap}.clip-marker .hint{font-size:8px}.clip-editor-fields label{min-width:100px}dialog.clip-editor{padding:14px}}
+
+/* Larger stills remain the single entry point for clip preview and trimming. */
+#page-clips .compact-clip{grid-template-columns:120px minmax(0,1fr)}
+#page-clips .compact-clip .clip-thumb{width:120px;height:96px}
+.clip-thumb .thumb-fallback{position:absolute;inset:0;display:grid;place-items:center}
+.clip-thumb img{position:absolute;inset:0;display:block}
+@media(max-width:600px){#page-clips .compact-clip{grid-template-columns:96px minmax(0,1fr)}#page-clips .compact-clip .clip-thumb{width:96px;height:96px}}
