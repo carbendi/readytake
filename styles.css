@@ -134,3 +134,8 @@ body>header .icon-button{width:22px;height:22px;line-height:20px;font-size:11px}
 #kits-list .kit-card.active{border-color:#aacb55;box-shadow:0 0 0 3px #c4e66c}
 #kits-list .kit-card.active button[data-kit]{background:#d8f36a;border-color:#d8f36a;color:#263f24}
 @media(max-width:600px){body>header{padding:4px 12px;gap:8px;min-height:32px}body>header .brand{font-size:17px;line-height:22px}body>header .brand>span{width:20px;height:20px;margin-right:5px}body>header .beta{font-size:6px;max-width:85px;letter-spacing:.5px;line-height:1.4}body>header .camera-launch{padding:1px 6px;font-size:9px;min-height:22px}}
+
+/* Keep two client kits visible side by side at every screen size. */
+#kits-list.kit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#kits-list .kit-card{min-width:0}#kits-list .kit-card h2{overflow-wrap:anywhere}
+@media(max-width:600px){#kits-list.kit-grid{gap:12px}#kits-list .kit-card{padding:14px}#kits-list .kit-card h2{font-size:17px;margin-bottom:12px}#kits-list .kit-card .mark{width:56px;height:56px;margin-bottom:12px}#kits-list .kit-card button{padding:6px 8px;font-size:9px}#kits-list .kit-card .hint{font-size:9px}}
