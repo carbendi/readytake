@@ -76,3 +76,9 @@ dialog.clip-editor{width:min(720px,calc(100% - 24px));max-width:720px;max-height
 .clip-range-playhead::before{content:'';position:absolute;top:10px;bottom:0;left:11px;width:2px;background:#192e21;pointer-events:none}
 .clip-range-playhead::after{content:'';position:absolute;top:0;left:5px;width:14px;height:12px;background:#192e21;clip-path:polygon(0 0,100% 0,100% 55%,50% 100%,0 55%);pointer-events:none}
 .clip-range-track{touch-action:none}.clip-range-track input.clip-range-input{z-index:5}.clip-range-track button.clip-range-playhead:focus-visible{outline:2px solid #8fa96c;outline-offset:2px}
+
+/* Wide pointer target around a thin cursor; scrubbing does not rebuild tracks. */
+#timeline button.tl-playhead{width:24px;height:auto;min-height:0;padding:0;margin:0;border:0;background:transparent;transform:translateX(-50%);pointer-events:auto;touch-action:none;cursor:ew-resize;z-index:6;border-radius:0}
+#timeline button.tl-playhead::before{left:7px;top:0;width:10px;height:10px}
+#timeline button.tl-playhead::after{content:'';position:absolute;left:11px;top:9px;bottom:0;width:2px;background:#b15e45;pointer-events:none}
+#timeline .tl-ruler-time{touch-action:none}#timeline .tl-ruler-time>span{pointer-events:none}

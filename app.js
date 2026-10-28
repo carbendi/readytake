@@ -102,7 +102,7 @@ async function ensureEditPreview(){
  if(editPreviewReady)return editPreviewReady;
  let generation=previewGeneration;readControls();$('sequence-status').textContent='Preparing full edit preview…';
  const k={...kit()},player=new EditPreview({clips:currentClips().map(c=>({...c})),canvas:$('edit-preview'),kit:k,lut:currentLut,logo:logoImage,voiceover:items.find(a=>a.id===k.voiceoverId),music:items.find(a=>a.id===k.musicId),options:editOptions(),
- onTime:(time,total)=>{if(generation!==previewGeneration)return;timelineView?.setPlayhead(time);$('preview-scrub').max=total;$('preview-scrub').value=time;$('sequence-status').textContent=clock(time)+' / '+clock(total)+' · Full edit preview';},
+ onTime:(time,total)=>{if(generation!==previewGeneration)return;if(!timelineView?.scrubbing)timelineView?.setPlayhead(time);$('preview-scrub').max=total;$('preview-scrub').value=time;$('sequence-status').textContent=clock(time)+' / '+clock(total)+' · Full edit preview';},
  onState:playing=>{if(generation===previewGeneration)$('preview-sequence').textContent=playing?'Ⅱ Pause preview':'▶ Play full edit';},
  onError:err=>{if(generation===previewGeneration){$('sequence-status').textContent=err.message;report(err)}}});
  editPreview=player;editPreviewReady=player.init().then(()=>{if(generation!==previewGeneration)throw Error('Preview changed. Tap Play again.');$('player-info').textContent='Full edit · B-roll, selected look, captions, logo and mixed audio';return player}).catch(async err=>{await player.close();if(generation===previewGeneration){editPreview=null;editPreviewReady=null;$('sequence-status').textContent=err.message}throw err});return editPreviewReady;
