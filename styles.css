@@ -116,21 +116,18 @@ header .camera-launch{background:#d8f36a;color:#29412c;border:0;font-size:11px;m
 @media(max-width:600px){#page-camera .camera-toolbar{padding-left:8px;padding-right:8px;gap:5px}#page-camera .camera-toolbar button{padding:6px;font-size:9px}.camera-quick-controls{justify-content:flex-start}#page-camera .camera-quick-controls button{padding:7px 9px;font-size:10px}#page-camera .record-row{gap:12px}#page-camera .camera-toolbar #shooting-slot{max-width:25%;font-size:10px}}
 @media(orientation:landscape) and (max-height:550px){#page-camera .camera-centre{padding:55px 105px 15px}#page-camera .camera-quick-controls{top:55px;right:0;left:auto;bottom:10px;width:95px;flex-direction:column;padding:4px}#page-camera .camera-quick-controls button{font-size:9px;padding:5px}#page-camera .record-row{left:0;right:auto;bottom:10px;top:55px;width:90px;flex-direction:column;gap:8px;background:transparent}#page-camera .viewfinder{max-height:calc(100dvh - 80px);width:auto!important;height:calc(100dvh - 80px)}#page-camera #record-note{display:none}}
 
-/* Compact identity bar, with clearly alternating client cards. */
+/* Compact identity bar and dark client cards. */
 body>header{padding:5px 24px;gap:12px;min-height:36px}
 body>header .brand{font-size:18px;letter-spacing:-.6px;white-space:nowrap;line-height:24px}
 body>header .brand>span{width:22px;height:22px;font-size:10px;border-radius:6px;margin-right:6px}
 body>header .beta{font-size:7px;letter-spacing:1px}
 body>header .camera-launch{padding:2px 8px;font-size:10px;line-height:20px;min-height:24px}
 body>header .icon-button{width:22px;height:22px;line-height:20px;font-size:11px}
-#kits-list .kit-card:nth-child(odd){background:#263f31;border-color:#263f31;color:#f3f7eb}
-#kits-list .kit-card:nth-child(odd) .hint{color:#c4d4bc}
-#kits-list .kit-card:nth-child(odd) .mark{background:#49634b;color:#e7f5d2}
-#kits-list .kit-card:nth-child(odd) button{background:#3b5740;border-color:#77916b;color:#f1f7e8}
-#kits-list .kit-card:nth-child(odd) button:hover{background:#4b6a4d;border-color:#c2d7aa}
-#kits-list .kit-card:nth-child(even){background:#fafcf4;border-color:#b9c9a9;color:#263f31}
-#kits-list .kit-card:nth-child(even) .hint{color:#65765a}
-#kits-list .kit-card:nth-child(even) button{background:#edf3e2;border-color:#bdcdab;color:#304b32}
+#kits-list .kit-card{background:#263f31;border-color:#263f31;color:#f3f7eb}
+#kits-list .kit-card .hint{color:#c4d4bc}
+#kits-list .kit-card .mark{background:#49634b;color:#e7f5d2}
+#kits-list .kit-card button{background:#3b5740;border-color:#77916b;color:#f1f7e8}
+#kits-list .kit-card button:hover{background:#4b6a4d;border-color:#c2d7aa}
 #kits-list .kit-card.active{border-color:#aacb55;box-shadow:0 0 0 3px #c4e66c}
 #kits-list .kit-card.active button[data-kit]{background:#d8f36a;border-color:#d8f36a;color:#263f24}
 @media(max-width:600px){body>header{padding:4px 12px;gap:8px;min-height:32px}body>header .brand{font-size:17px;line-height:22px}body>header .brand>span{width:20px;height:20px;margin-right:5px}body>header .beta{font-size:6px;max-width:85px;letter-spacing:.5px;line-height:1.4}body>header .camera-launch{padding:1px 6px;font-size:9px;min-height:22px}}
