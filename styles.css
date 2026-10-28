@@ -85,3 +85,13 @@ dialog.clip-editor{width:min(720px,calc(100% - 24px));max-width:720px;max-height
 
 .timeline-mini-transport{display:flex;justify-content:center;padding-top:5px}
 #page-timeline .timeline-mini-transport #preview-sequence{width:62px;min-height:26px;margin:0;padding:3px 7px;font-size:10px;line-height:18px;border-radius:5px;background:#f5f8ef;color:#304c32;border:1px solid #becdad}
+
+.edit-slots{display:flex;flex-wrap:wrap;gap:7px;max-width:100%;margin:8px 0}
+.edit-slots button{padding:7px 11px;font-size:12px;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;touch-action:manipulation}
+.edit-slots button.selected{background:#304c32;color:#f3f8eb;border-color:#304c32}.edit-slots [data-new-edit-slot]{min-width:36px;border-style:dashed;font-size:18px}
+#page-clips .slot-rename{padding:3px 7px;font-size:9px;background:transparent}
+#timeline-slot-title{font-size:13px;letter-spacing:.2px;color:#3e5835;max-width:65%;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.camera-toolbar #shooting-slot{max-width:40%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:600px){#page-clips .heading{gap:10px}#page-clips .heading>div{width:100%}#page-clips .heading>button{width:auto}.edit-slots button{max-width:160px}.camera-toolbar{gap:6px}.camera-toolbar button{padding:7px;font-size:10px}}
+
+#page-clips .heading>div{min-width:0}.edit-slots{flex-wrap:nowrap;overflow-x:auto;width:min(720px,calc(100vw - 70px));padding-bottom:4px}.edit-slots button{flex-shrink:0}
