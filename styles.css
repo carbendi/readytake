@@ -13,3 +13,5 @@ nav{overflow-x:auto}nav>button{flex-shrink:0}.timeline-entry{display:flex;align-
 .timeline-preview #edit-preview{display:block;width:100%;height:clamp(130px,28vh,300px);object-fit:contain;background:#17251c;border-radius:8px}.preview-scrub-label{max-width:700px;margin:10px auto 0;font-size:9px;text-align:left}.preview-scrub-label input{width:100%;margin-top:4px}@media(max-width:600px){.timeline-preview #edit-preview{height:23vh;min-height:120px}}
 /* Keep the image and timeline adjacent; tools follow the tracks. */
 #page-timeline .timeline-preview .panel{margin-bottom:6px;padding-bottom:8px}#timeline>.tl-scroll{margin-bottom:16px}#page-timeline .preview-transport{margin-top:12px;text-align:center}#page-timeline .preview-transport #player-info{margin-top:0}#page-timeline .preview-transport #sequence-status{margin-bottom:0}
+
+#timeline .tl-track-name{flex-basis:80px;width:80px;padding-left:5px;padding-right:5px}#timeline .tl-track-name>span:first-child{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
