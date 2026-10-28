@@ -70,3 +70,9 @@ dialog.clip-editor{width:min(720px,calc(100% - 24px));max-width:720px;max-height
 .clip-range-input:focus-visible{z-index:5;outline:2px solid #779f5a}
 .marker-buttons-title{align-self:center;font-size:12px;font-weight:650;margin-left:10px}
 .clip-editor .add-marker-green,.clip-editor .add-marker-red{font-size:26px;line-height:30px;min-width:44px;min-height:44px;padding:4px 8px;background:#f4f7ef}
+
+/* A separate touch target lets the preview cursor move without changing the trim. */
+.clip-range-track button.clip-range-playhead{position:absolute;top:-12px;bottom:-4px;width:24px;height:auto;min-height:0;padding:0;margin:0;border:0;border-radius:0;background:transparent;transform:translateX(-50%);pointer-events:auto;touch-action:none;cursor:ew-resize;z-index:4}
+.clip-range-playhead::before{content:'';position:absolute;top:10px;bottom:0;left:11px;width:2px;background:#192e21;pointer-events:none}
+.clip-range-playhead::after{content:'';position:absolute;top:0;left:5px;width:14px;height:12px;background:#192e21;clip-path:polygon(0 0,100% 0,100% 55%,50% 100%,0 55%);pointer-events:none}
+.clip-range-track{touch-action:none}.clip-range-track input.clip-range-input{z-index:5}.clip-range-track button.clip-range-playhead:focus-visible{outline:2px solid #8fa96c;outline-offset:2px}
