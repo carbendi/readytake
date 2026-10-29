@@ -1,6 +1,6 @@
 # ReadyTake — Working browser prototype v0.1
 
-A static, dependency-free camera app prepared for GitHub Pages. This is working source code, distinct from the earlier simulated UI prototype. No build step, account, API key, AI service or upload server is required.
+A static, dependency-free camera app prepared for GitHub Pages. This is working source code, distinct from the earlier simulated UI prototype. No build step or account is required for recording and manual editing. Optional AI Assist uses a user-supplied Gemini API key.
 
 ## Put it on GitHub Pages
 
@@ -39,7 +39,7 @@ On iPhone, open the published link in Safari, allow camera/microphone when asked
 - B-roll import or camera recording, positioned at a time in the full sequence and muted over the original dialogue.
 - Record voiceover with your phone microphone, preview/retake/save/download the take, or import a voiceover file. The script can stay visible while recording. Voiceover start offset and looping imported background music are supported.
 - Speech-level-driven audio ducking while rendering: voiceover lowers main voice, and either voice lowers music. Independent switches, adjustable reductions, smooth gain recovery. Threshold is a basic RMS heuristic; noisy audio may cause false triggers. Refine by listening to the rendered result.
-- Manual captions or timed SRT import, custom font, caption colour/size, PNG logo placement/size, all composited during export.
+- Manual captions or timed SRT import, custom font, caption colour/size, PNG logo placement/size, all composited during preview and export.
 - A real-time rendered sequence download using canvas capture, Web Audio mixing and the browser’s supported encoder.
 - A selected-originals ZIP and JSON edit manifest. Individual source downloads stay available if a ZIP is too large.
 
@@ -51,9 +51,21 @@ The Camera page shows the viewfinder and recording controls. Open **Settings** f
 
 Open **Your timeline** in navigation, or the **Your timeline** card in Clips & edit, for the dedicated editor with its preview above text/logo, B-roll, A-roll, voiceover, linked main dialogue and music tracks. Audio imports, voice recording and mixing are on their own **Audio** page. Drag A-roll to reorder, drag B-roll/voiceover to position, or drag video edges to trim. Tap a block for exact numeric edits and Earlier/Later buttons. The timeline fits the page by default. Horizontal zoom expands timing for finer edits; Fit returns to the full sequence. Track height adjusts vertical scale globally, while each track has individual −/+ height buttons. Horizontal scrolling stays inside the timeline when zoomed in. Select a time and use **B-roll at playhead** to record/import a cutaway there. Changes persist locally and feed the existing render pipeline. Music loops over the edit; main dialogue follows A-roll. **Play full edit** previews B-roll, colour, captions/logo and ducked dialogue/voiceover/music together. Use the preview scrubber or click an empty timeline lane/ruler to inspect a composited frame. **Preview source** remains available for checking an original clip. Preview uses a lower resolution; export uses the selected output resolution. Touch interactions have not been verified on a physical iPhone.
 
+## AI Assist
+
+In **Clips & edit**, use **AI Assist** and the gear button below B-roll. The workflow covers brief/direction, hooks and script, product-note dictation, filming, selected-footage analysis, proposed cuts/B-roll/subtitles, missing shots and final preview/export. Gemini requests use the public generateContent API, with model selection loaded from the user's API account. Apple AI and the other provider choices are explicitly labelled as not connected in this browser build.
+
+Open AI Settings, choose Gemini, enter your own API key, load models, choose a suitable model, and save. Keys stay only in this tab's memory and are cleared on reload. They are not written into settings, kit backups or GitHub. Provider preferences and generated drafts are saved locally.
+
+Generating a script sends the brief/product notes to Google. Video analysis requires enabling footage sharing first. It sends selected footage with audio to Google; normal provider API charges and data terms apply. Larger videos are converted locally into 360-pixel, up-to-45-second analysis segments using the existing browser renderer. This conversion can take real playback time and requires a visible tab and supported canvas recording. Small original clips may be sent directly. Analysis currently supports up to 30 selected clips per run and 12 MB per uploaded segment. Cancellation preserves existing edits. Completed clip analyses are cached locally; changed trims or markers require reanalysis.
+
+Generated timestamps, IDs, duration and caption bounds are checked before applying a proposal. A proposal that includes an inferred exclusion or a red marker is rejected. Applying a reviewed proposal creates a separate **AI cut** video slot with links to the originals, preserving the current slot. Missing B-roll can then be recorded into the new slot. Transcripts/captions and cut decisions are AI drafts; inspect them in the full preview. Speech-following remains experimental browser recognition. Music generation, NLE XML and cloud client delivery are not connected.
+
+Live Gemini requests and proxy rendering have not been verified on a physical device in this environment. Automated provider tests mock the network; no real API key was used or provider charges incurred during those tests.
+
 ## What is not in this build
 
-- Native Apple AI, external AI connections, brief interpretation, AI script generation, automatic subtitles or AI take selection.
+- Native Apple AI and external providers other than Gemini. The Gemini workflow is an optional prototype, not a guaranteed autonomous editor.
 - Dropbox authentication/uploads/review links, Frame.io or client approval services.
 - FCPXML/Premiere XML export. The edit manifest is JSON and is labelled as such.
 - Native shutter angle/ISO/white-balance controls on browsers that do not expose them.
@@ -63,7 +75,7 @@ Open **Your timeline** in navigation, or the **Your timeline** card in Clips & e
 
 ## Storage and privacy
 
-Media and assets stay on the current device/browser origin. GitHub hosts source files only and does not receive the recordings. There are no analytics, third-party scripts, remote fonts or AI calls in the application source.
+Media and assets stay on the current device/browser origin. GitHub hosts source files only and does not receive the recordings. There are no analytics, third-party scripts or remote fonts. Optional Gemini AI Assist sends the requested brief or selected video/audio directly to Google only when invoked as described above; provider data terms apply.
 
 IndexedDB is not a permanent archive. Browser storage may be cleared or evicted, private browsing can restrict it, and changing the Pages URL gives a separate workspace. Download important originals and kit backups. Exporting large files uses memory; the originals ZIP is capped at 450 MB and individual clip downloads are provided.
 
@@ -94,7 +106,7 @@ With Node 20+ installed, run `npm test` for the logic and mocked capture/storage
 
 ## Validation
 
-28 automated tests passed, covering LUT parsing/axis mapping, SRT timing, trimming/order, audio priority and recovery, output dimensions, MIME selection, speech matching, escaped text, ZIP integrity, DOM references a mocked camera-record-save lifecycle, and microphone-only voiceover recording/cleanup. All application JavaScript passed syntax checks. Camera hardware, browser playback/encoding and visual rendering have not been verified on a real iPhone or through a browser in this environment. Start with the five-second test above.
+Automated logic and mocked integration tests cover LUT parsing/axis mapping, SRT timing, trimming/order, audio priority and recovery, output dimensions, MIME selection, speech matching, escaped text, ZIP integrity, DOM references a mocked camera-record-save lifecycle, and microphone-only voiceover recording/cleanup. All application JavaScript passed syntax checks. Camera hardware, browser playback/encoding and visual rendering have not been verified on a real iPhone or through a browser in this environment. Start with the five-second test above.
 
 ## Source map
 
@@ -103,9 +115,11 @@ With Node 20+ installed, run `npm test` for the logic and mocked capture/storage
 - `timeline.js`: multitrack display, source trimming, reordering and placement controls.
 - `core.js`: parsing, timing, audio-priority decisions and pure helpers.
 - `renderer.js`: GPU LUT preview and canvas graphics.
-- `preview.js`, `composition.js`: live timeline playback, seekable composite preview and shared export graphics.\n- `exporter.js`: real-time sequence rendering and audio mixing.
+- `preview.js`, `composition.js`: live timeline playback, seekable composite preview and shared export graphics.
+- `exporter.js`: real-time sequence rendering and audio mixing.
 - `storage.js`: IndexedDB media/assets/settings.
 - `zip.js`: dependency-free ZIP downloads.
-- `tests/`: automated tests.
+- `ai-service.js`, `ai-workspace.js`: optional Gemini connection, guided assist workflow and proposal validation.
+- `tests/`: automated tests, including mocked AI requests and applying proposals to separate slots.
 
 Created for Hurcan’s ReadyTake project. This package does not assign or change ownership rights.
