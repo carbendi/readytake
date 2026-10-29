@@ -151,3 +151,12 @@ button.danger-button{color:#a52f26;background:#f9e7df;border-color:#ddb4a6}
 .shoot-notes-panel{margin:22px 0;padding:20px;background:#f3f7ec;border:1px solid var(--line);border-radius:10px}
 .shoot-notes-panel h3{margin-bottom:10px}.shoot-task{display:flex;align-items:center;gap:10px;margin:7px 0}.shoot-task input[type=checkbox]{flex-shrink:0;width:18px;height:18px}.shoot-task input:not([type=checkbox]){min-width:0;flex:1;margin:0;padding:8px!important}.shoot-task.complete input:not([type=checkbox]){text-decoration:line-through;color:#7d8a70;background:#e7efdc}.shoot-task button{padding:5px 8px}.shoot-task-add{display:flex;gap:8px;margin:14px 0}.shoot-task-add input{min-width:0;flex:1}.shoot-task-add button{white-space:nowrap}#shoot-checklist{margin-top:14px;max-height:440px;overflow:auto}#shoot-checklist-progress{font-size:10px}#review-shoot-tasks,#zip-brand-tasks{width:100%;font-size:12px;line-height:1.6}#confirm-brand-zip{margin-top:10px}
 @media(max-width:600px){.shoot-notes-panel{padding:13px}.shoot-notes-panel .between{align-items:flex-start;gap:6px}.shoot-task{gap:6px}}
+
+/* Dark clip cards separate each take from the media-library background. */
+#page-clips .compact-clip{background:#263f31;border:1px solid #425d46;color:#f0f5e8;border-radius:9px}
+#page-clips .compact-clip .filename{color:#c4d4bc}
+#page-clips .compact-clip .clip-marker-count{color:#d8f36a}
+#page-clips .compact-clip button:not(.clip-thumb){background:#3b5740;border-color:#78916b;color:#f0f5e8}
+#page-clips .compact-clip button:not(.clip-thumb):hover{background:#4b6a4d;border-color:#c2d7aa}
+#page-clips .compact-clip .clip-thumb{background:#14251a}
+#page-clips .compact-clip input[type=checkbox]{accent-color:#d8f36a}
