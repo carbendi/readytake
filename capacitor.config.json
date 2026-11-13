@@ -1,0 +1,14 @@
+{
+  "appId": "com.carbendi.readytake",
+  "appName": "ReadyTake",
+  "webDir": "native-web",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#1c2d23"
+  },
+  "plugins": {
+    "SystemBars": {
+      "style": "DARK"
+    }
+  }
+}

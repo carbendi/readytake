@@ -1,3 +1,4 @@
+import {isIPhoneApp} from './ios-bridge.js';
 import {readZip} from './read-zip.js';
 
 export const callSheetFields=[
@@ -15,10 +16,11 @@ export async function readClientDocument(file,{loadPDF=base=>import(base+'pdf.mi
   if(!new TextDecoder().decode(bytes.subarray(0,1024)).includes('%PDF-'))throw Error('This file is not a valid PDF.');
   let task;
   try{
-   const base='https://cdn.jsdelivr.net/npm/pdfjs-dist@5.6.205/legacy/build/';
+   const native=isIPhoneApp();
+   const base=native?new URL('./pdf-reader/',import.meta.url).href:'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.6.205/legacy/build/';
    const pdf=await loadPDF(base);
    pdf.GlobalWorkerOptions.workerSrc||=base+'pdf.worker.min.mjs';
-   task=pdf.getDocument({data:bytes,isEvalSupported:false,disableFontFace:true,useWasm:false});
+   task=pdf.getDocument({data:bytes,isEvalSupported:false,disableFontFace:true,useWasm:false,...(native?{cMapUrl:base+'cmaps/',cMapPacked:true,standardFontDataUrl:base+'standard_fonts/'}:{})});
    const doc=await task.promise, pages=[];
    for(let i=1;i<=Math.min(doc.numPages,50);i++){
     const page=await doc.getPage(i),content=await page.getTextContent();
