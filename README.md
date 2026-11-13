@@ -1,6 +1,6 @@
 # ReadyTake — Working browser prototype v0.1
 
-A static, dependency-free camera app prepared for GitHub Pages. This is working source code, distinct from the earlier simulated UI prototype. No build step or account is required for recording and manual editing. Optional AI Assist accepts user-supplied Gemini, OpenAI or Claude API keys; the last two require the local launch below.
+A static camera app prepared for GitHub Pages. This is working source code, distinct from the earlier simulated UI prototype. No build step or account is required for recording and manual editing. Optional AI Assist accepts user-supplied Gemini, OpenAI or Claude API keys; the last two require the local launch below.
 
 ## Put it on GitHub Pages
 
@@ -51,6 +51,12 @@ The Camera page shows the viewfinder and recording controls. Open **Settings** f
 
 Open **Your timeline** in navigation, or the **Your timeline** card in Clips & edit, for the dedicated editor with its preview above text/logo, B-roll, A-roll, voiceover, linked main dialogue and music tracks. Audio imports, voice recording and mixing are on their own **Audio** page. Drag A-roll to reorder, drag B-roll/voiceover to position, or drag video edges to trim. Tap a block for exact numeric edits and Earlier/Later buttons. The timeline fits the page by default. Horizontal zoom expands timing for finer edits; Fit returns to the full sequence. Track height adjusts vertical scale globally, while each track has individual −/+ height buttons. Horizontal scrolling stays inside the timeline when zoomed in. Select a time and use **B-roll at playhead** to record/import a cutaway there. Changes persist locally and feed the existing render pipeline. Music loops over the edit; main dialogue follows A-roll. **Play full edit** previews B-roll, colour, captions/logo and ducked dialogue/voiceover/music together. Use the preview scrubber or click an empty timeline lane/ruler to inspect a composited frame. **Preview source** remains available for checking an original clip. Preview uses a lower resolution; export uses the selected output resolution. Touch interactions have not been verified on a physical iPhone.
 
+## Client documents and call sheets
+
+Use **Brand Kit → Client documents → Import brief** to add a PDF, DOCX, TXT or Markdown file. Extracted brief text is added to Shoot notes. Brand ZIPs accept the same formats; files named “call sheet” are routed to the call sheet. Original PDFs remain available even when there is no selectable text (scans are not OCR'd). A network connection is needed to load the PDF reader the first time.
+
+Open **Call sheet** from Brand Kit or Camera to check call times, what to shoot, locations, contacts, invoicing and other details. Recognised headings prefill editable sections. Verify the entries against the original. The complete extracted text and original PDF are available separately. Call sheets are stored per kit and aren't included in the AI brief.
+
 ## AI Assist
 
 In **Clips & edit**, use **AI Assist** and the gear button below B-roll. The workflow covers brief/direction, hooks and script, product-note dictation, filming, selected-footage analysis, proposed cuts/B-roll/subtitles, missing shots and final preview/export. Gemini requests use the public generateContent API, with model selection loaded from the user's API account. OpenAI and Claude support briefs, hooks, scripts and rough cuts from existing analysis. Video/audio analysis still uses Gemini. Apple AI needs a native app.
@@ -84,7 +90,7 @@ Live provider requests and proxy rendering have not been verified on a physical 
 
 ## Storage and privacy
 
-Media and assets stay on the current device/browser origin. GitHub hosts source files only and does not receive the recordings. There are no analytics, third-party scripts or remote fonts. Optional AI Assist sends task data to the selected provider only when requested, as described above; provider data terms apply.
+Media and assets stay on the current device/browser origin. GitHub hosts source files only and does not receive the recordings. There are no analytics or remote fonts. PDF import loads Mozilla PDF.js from jsDelivr to extract text locally; the PDF itself is not uploaded. Optional AI Assist sends task data to the selected provider only when requested, as described above; provider data terms apply.
 
 IndexedDB is not a permanent archive. Browser storage may be cleared or evicted, private browsing can restrict it, and changing the Pages URL gives a separate workspace. Download important originals and kit backups. Exporting large files uses memory; the originals ZIP is capped at 450 MB and individual clip downloads are provided.
 

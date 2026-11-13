@@ -193,3 +193,7 @@ body>footer{border-bottom:var(--safe-bottom) solid transparent}
   #page-camera .camera-quick-controls{top:calc(55px + var(--safe-top));left:auto;bottom:calc(10px + var(--safe-bottom))}
   #page-camera .record-row{top:calc(55px + var(--safe-top));right:auto;bottom:calc(10px + var(--safe-bottom))}
 }
+.call-sheet-section{border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin:7px 0}
+.call-sheet-section summary{cursor:pointer;font-weight:650}
+.call-sheet-section pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}
+#dialog:has(.call-sheet-section){max-height:calc(100dvh - var(--safe-top) - var(--safe-bottom) - 24px);overflow:auto}
