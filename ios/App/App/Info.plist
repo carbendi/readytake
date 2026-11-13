@@ -28,6 +28,8 @@
 	<string>ReadyTake uses the camera to record clips for your projects.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>ReadyTake uses the microphone to record dialogue and voiceovers for your projects.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>ReadyTake uses on-device speech recognition to follow your teleprompter or turn your spoken product notes into text.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -198,4 +198,4 @@ body>footer{border-bottom:var(--safe-bottom) solid transparent}
 .call-sheet-section pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}
 #dialog:has(.call-sheet-section){max-height:calc(100dvh - var(--safe-top) - var(--safe-bottom) - 24px);overflow:auto}
 
-.iphone-app #open-ai-assist,.iphone-app #open-ai-settings{display:none}
+

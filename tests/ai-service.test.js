@@ -32,3 +32,27 @@ test('OpenAI and Claude route separately through the local helper, and only Gemi
   assert.equal(JSON.parse(calls[2][1].body).messages[0].content,'Script');
  }finally{globalThis.fetch=previous;if(location===undefined)delete globalThis.location;else globalThis.location=location;setAIKey('','openai');setAIKey('','claude');}
 });
+
+test('iPhone AI calls the native bridge, passes the chosen Gemini model and does not use browser fetch',async()=>{
+ const original=globalThis.Capacitor,fetch=globalThis.fetch,calls=[];
+ try{
+  globalThis.fetch=async()=>{throw Error('Unexpected browser request');};
+  globalThis.Capacitor={getPlatform:()=> 'ios',isNativePlatform:()=>true,nativePromise:async(plugin,method,options)=>{
+   calls.push({plugin,method,options});
+   if(method==='appleStatus')return {available:true};
+   if(method==='appleGenerate')return {text:'{"script":"On device"}'};
+   return {status:200,body:JSON.stringify({candidates:[{finishReason:'STOP',content:{parts:[{text:'{"script":"Gemini"}'}]}}]})};
+  }};
+  setAIKey('test-only','gemini');
+  assert.equal((await listAIModels(undefined,'apple'))[0].id,'apple-on-device');
+  assert.equal((await generateAIJson({provider:'apple',prompt:'Write'})).script,'On device');
+  assert.equal((await generateAIJson({provider:'gemini',model:'gemini-test',prompt:'Write'})).script,'Gemini');
+  assert.deepEqual(calls.map(x=>x.method),['appleStatus','appleGenerate','provider']);
+  assert.equal(calls[2].options.model,'gemini-test');
+  assert.equal(calls[2].options.key,'test-only');
+  assert.equal('key' in calls[1].options,false);
+ }finally{
+  setAIKey('','gemini');globalThis.fetch=fetch;
+  if(original)globalThis.Capacitor=original;else delete globalThis.Capacitor;
+ }
+});

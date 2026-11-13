@@ -1,4 +1,4 @@
-import {isIPhoneApp} from './ios-bridge.js';
+import {isIPhoneApp,nativeReadyTake} from './ios-bridge.js';
 import {readZip} from './read-zip.js';
 
 export const callSheetFields=[
@@ -32,6 +32,14 @@ export async function readClientDocument(file,{loadPDF=(base,name)=>import(base+
    else if(doc.numPages>50)warning='Text was extracted from the first 50 pages. The original PDF has all pages.';
   }catch{warning='Text extraction was unavailable. You can still open the original PDF or paste the details manually.';}
   finally{try{await task?.destroy()}catch{}}
+  if(!text&&isIPhoneApp()&&file.size<=10*1024*1024){
+   try{
+    const fresh=new Uint8Array(await file.arrayBuffer());let raw='';
+    for(let i=0;i<fresh.length;i+=16384)raw+=String.fromCharCode(...fresh.subarray(i,i+16384));
+    const result=await nativeReadyTake('ocrPDF',{data:btoa(raw)});
+    if(result.text?.trim()){text=result.text.trim();warning=result.truncated?'OCR covered the first 10 pages. Check the original for the remaining pages.':'Scanned text recognised on this iPhone. Check it against the original.';}
+   }catch{}
+  }
  }else if(ext==='docx'){
   const [part]=await readZip(file,{accept:name=>name==='word/document.xml'});
   if(!part)throw Error('Could not find text in the Word document.');

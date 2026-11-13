@@ -28,3 +28,35 @@ export async function shareIPhoneFile(blob,name){
   sharing=false;
  }
 }
+
+export function nativeReadyTake(method, options={}){
+ return globalThis.Capacitor.nativePromise('ReadyTakeNative',method,options);
+}
+
+export function nativeReadyTakeTask(method,options,signal){
+ if(signal?.aborted)return Promise.reject(new DOMException('Cancelled','AbortError'));
+ const id=crypto.randomUUID();
+ const cancel=()=>nativeReadyTake('cancel',{id}).catch(()=>{});
+ signal?.addEventListener('abort',cancel,{once:true});
+ return nativeReadyTake(method,{...options,id}).then(result=>{
+  if(signal?.aborted)throw new DOMException('Cancelled','AbortError');
+  return result;
+ },error=>{if(signal?.aborted)throw new DOMException('Cancelled','AbortError');throw error;})
+ .finally(()=>signal?.removeEventListener('abort',cancel));
+}
+
+// Matches the small SpeechRecognition interface used by the existing prompter.
+export class IPhoneSpeechRecognition {
+ start(){
+  this.subscription=globalThis.Capacitor.addListener('ReadyTakeNative','speech',event=>{
+   if(event.text){this.lastText=event.text;this.receivedFinal=Boolean(event.final);const result=[{transcript:event.text}];result.isFinal=Boolean(event.final);this.onresult?.({resultIndex:0,results:[result]});}
+   if(event.ended){if(!this.interimResults&&this.lastText&&!this.receivedFinal){const result=[{transcript:this.lastText}];result.isFinal=true;this.onresult?.({resultIndex:0,results:[result]});}this.finish();this.onend?.();}
+  });
+  nativeReadyTake('speechStart',{language:this.lang,words:this.words||[]}).catch(error=>{
+   if(!this.subscription)return;
+   this.finish();this.onerror?.({error:error.message||'Speech recognition unavailable'});this.onend?.();
+  });
+ }
+ finish(){this.subscription?.remove();this.subscription=null;}
+ stop(){if(!this.subscription)return;if(!this.interimResults&&this.lastText&&!this.receivedFinal){const result=[{transcript:this.lastText}];result.isFinal=true;this.onresult?.({resultIndex:0,results:[result]});}this.finish();nativeReadyTake('speechStop').catch(()=>{});this.onend?.();}
+}
