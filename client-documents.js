@@ -6,7 +6,7 @@ export const callSheetFields=[
  ['contacts','Contacts'],['invoicing','Invoicing / PO details'],['notes','Other project details']
 ];
 
-export async function readClientDocument(file,{loadPDF=base=>import(base+'pdf.min.mjs')}={}){
+export async function readClientDocument(file,{loadPDF=(base,name)=>import(base+name)}={}){
  const name=file.name||'Client document',ext=name.split('.').at(-1).toLowerCase();
  if(!/^(pdf|docx|txt|md)$/.test(ext))throw Error('Choose a PDF, DOCX, TXT or Markdown file.');
  if(file.size>20*1024*1024)throw Error('Choose a document smaller than 20 MB.');
@@ -18,8 +18,8 @@ export async function readClientDocument(file,{loadPDF=base=>import(base+'pdf.mi
   try{
    const native=isIPhoneApp();
    const base=native?new URL('./pdf-reader/',import.meta.url).href:'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.6.205/legacy/build/';
-   const pdf=await loadPDF(base);
-   pdf.GlobalWorkerOptions.workerSrc||=base+'pdf.worker.min.mjs';
+   const pdf=await loadPDF(base,native?'pdf.min.js':'pdf.min.mjs');
+   pdf.GlobalWorkerOptions.workerSrc||=base+(native?'pdf.worker.min.js':'pdf.worker.min.mjs');
    task=pdf.getDocument({data:bytes,isEvalSupported:false,disableFontFace:true,useWasm:false,...(native?{cMapUrl:base+'cmaps/',cMapPacked:true,standardFontDataUrl:base+'standard_fonts/'}:{})});
    const doc=await task.promise, pages=[];
    for(let i=1;i<=Math.min(doc.numPages,50);i++){

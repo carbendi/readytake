@@ -1,0 +1,69 @@
+/* iPhone layout: navigation stays at the bottom; Camera remains a focused workspace. */
+.iphone-app{
+ --ios-tab-content:60px;
+ --ios-tab-space:calc(var(--ios-tab-content) + var(--safe-bottom));
+ -webkit-text-size-adjust:100%;
+}
+.iphone-app body>header{
+ position:relative;min-height:calc(52px + var(--safe-top));
+ padding:calc(4px + var(--safe-top)) calc(12px + var(--safe-right)) 4px calc(12px + var(--safe-left));
+}
+.iphone-app body>header .beta{display:none}
+.iphone-app body>header .brand{margin-right:auto;font-size:1.25rem}
+.iphone-app body>header .camera-launch,.iphone-app body>header .icon-button{
+ margin:0;min-width:44px;min-height:44px;font-size:.875rem;padding:0 10px;
+}
+.iphone-app body>nav{
+ position:fixed;top:auto;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+ min-height:var(--ios-tab-space);padding:4px 4px calc(4px + var(--safe-bottom));
+ gap:2px;border-top:1px solid #bfcbbd;border-bottom:0;background:#fafbf6;overflow:visible;
+}
+.iphone-app body:has(#page-camera.active)>nav{display:none}
+.iphone-app body>nav button{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+ min-width:0;min-height:52px;padding:2px 0;color:#46574b;font-size:.75rem;line-height:1.2;
+}
+.iphone-app body>nav button.active{color:#203d28;background:#dfead7;font-weight:700}
+.iphone-app .tab-icon{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.iphone-app #clip-count{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.iphone-app body>footer{padding-bottom:calc(16px + var(--ios-tab-space));border-bottom:0}
+.iphone-app body:not(:has(#page-camera.active)) #toast{bottom:calc(12px + var(--ios-tab-space))}
+.iphone-app :is(main,dialog) :is(button,select){min-height:44px;min-width:44px}
+.iphone-app :is(main,dialog) :is(input:not([type=checkbox]):not([type=range]):not([type=color]),select,textarea){font-size:1rem}
+.iphone-app :is(main,dialog) label.check{min-height:44px}
+.iphone-app :is(main,dialog) button:not(.clip-thumb){font-size:max(.8125rem,13px)}
+.iphone-app #page-clips .compact-clip button:not(.clip-thumb){min-height:44px;font-size:.8125rem}
+.iphone-app #page-clips .compact-clip .between{flex-wrap:wrap}
+.iphone-app :focus-visible{outline:3px solid #497a56;outline-offset:3px}
+.iphone-app #page-camera :focus-visible{outline-color:#d8f36a}
+.iphone-app .camera-quick-controls{top:calc(64px + var(--safe-top))}
+.iphone-app #page-camera .camera-centre{padding-top:calc(125px + var(--safe-top));padding-bottom:calc(100px + var(--safe-bottom))}
+.iphone-app #page-camera .viewfinder{max-height:calc(100dvh - 225px - var(--safe-top) - var(--safe-bottom))}
+.iphone-app #page-camera .record-row{gap:clamp(4px,2vw,12px)}
+.iphone-app #page-camera .record-row button{flex-shrink:0}
+.iphone-app #page-camera .camera-toolbar #shooting-slot{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.iphone-app #page-camera .record-row .record{width:62px;height:62px}
+.iphone-app dialog{max-height:calc(100dvh - var(--safe-top) - var(--safe-bottom) - 24px);overflow:auto}
+.iphone-app [hidden]{display:none!important}
+@media(orientation:landscape) and (max-height:550px){
+ .iphone-app #page-camera .camera-centre{padding:calc(62px + var(--safe-top)) 105px calc(10px + var(--safe-bottom))}
+ .iphone-app #page-camera .viewfinder{max-height:calc(100dvh - 80px - var(--safe-top) - var(--safe-bottom))}
+ .iphone-app .camera-quick-controls{flex-direction:column;justify-content:flex-start;overflow-y:auto;bottom:calc(8px + var(--safe-bottom))}
+ .iphone-app #page-camera .record-row{justify-content:flex-start;overflow-y:auto;gap:4px}
+}
+@media(prefers-reduced-motion:reduce){
+ .iphone-app *, .iphone-app *::before,.iphone-app *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+.iphone-app body>nav .tab-label{background:none;margin:0;padding:0;font-size:inherit}
+.iphone-app body>nav{padding-inline:4px}
+.iphone-app .hint{color:#4f6453}
+.iphone-app #page-camera .camera-settings-sheet .hint{color:#4f6453}
+.iphone-app #page-camera .viewfinder .hint,.iphone-app #page-camera #record-note{color:#c5d6bf}
+.iphone-app :is(#page-timeline,#page-export) :is(canvas,video){max-width:100%}
+.iphone-app #export-progress{width:100%;accent-color:#3c6948}
+@media(min-width:720px){
+ .iphone-app body>nav{grid-template-columns:repeat(5,minmax(80px,110px));justify-content:center;gap:12px}
+}
+@media(orientation:portrait) and (max-width:390px){
+ .iphone-app #page-camera .record-row button:not(.record){padding-inline:5px;font-size:.75rem}
+}

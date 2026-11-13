@@ -2,15 +2,39 @@ import {sequence,pickMime,extension,mixGains,renderDimensions} from './core.js';
 import {LookRenderer} from './renderer.js';
 import {paintComposition} from './composition.js';
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
-function ready(video,blob){return new Promise((resolve,reject)=>{video.playsInline=true;video.preload='auto';video.src=URL.createObjectURL(blob);let timeout=setTimeout(()=>reject(Error('A source video could not load.')),15000);video.onloadeddata=()=>{clearTimeout(timeout);resolve()};video.onerror=()=>{clearTimeout(timeout);reject(Error('A video format cannot be decoded by this browser.'));};video.load();});}
-async function seek(video,t){if(Math.abs(video.currentTime-t)<.025&&video.readyState>=2)return;await new Promise((resolve,reject)=>{let timer=setTimeout(()=>reject(Error('A source video could not seek to its trim point.')),10000);video.onseeked=()=>{clearTimeout(timer);resolve();};video.currentTime=t;});}
+function waitForVideo(video,event,timeoutMs,message,signal,begin){
+ return new Promise((resolve,reject)=>{
+  if(signal.aborted){reject(new DOMException('Render cancelled','AbortError'));return;}
+  const cleanup=()=>{clearTimeout(timer);video.removeEventListener(event,ready);video.removeEventListener('error',failed);signal.removeEventListener('abort',cancelled);};
+  const finish=error=>{cleanup();error?reject(error):resolve();};
+  const ready=()=>finish();
+  const failed=()=>finish(Error('A source video could not be decoded.'));
+  const cancelled=()=>finish(new DOMException('Render cancelled','AbortError'));
+  const timer=setTimeout(()=>finish(Error(message)),timeoutMs);
+  video.addEventListener(event,ready,{once:true});video.addEventListener('error',failed,{once:true});signal.addEventListener('abort',cancelled,{once:true});
+  try{begin();}catch(error){finish(error);}
+ });
+}
+async function seek(video,t,signal){
+ if(Math.abs(video.currentTime-t)<.025&&video.readyState>=2)return;
+ await waitForVideo(video,'seeked',10000,'A source video could not seek to its trim point.',signal,()=>{video.currentTime=t;});
+}
 function rms(node){if(!node)return 0;let data=new Float32Array(node.fftSize);node.getFloatTimeDomainData(data);let sum=0;for(let x of data)sum+=x*x;return Math.sqrt(sum/data.length);}
 export async function renderSequence({clips,canvas,kit,lut,logo,voiceover,music,options,onProgress,signal}){
 if(!canvas.captureStream)throw Error('This browser cannot record a composited canvas. Download originals and try desktop Chrome or Safari.');
-let seq=sequence(clips),total=seq.reduce((n,c)=>n+c.length,0);if(!seq.length)throw Error('Select at least one main clip.');let Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)throw Error('Web Audio is unavailable.');let ac=new Audio();await ac.resume();let dest=ac.createMediaStreamDestination(),mainGain=ac.createGain(),upperGain=ac.createGain(),musicGain=ac.createGain();mainGain.connect(dest);upperGain.connect(dest);musicGain.connect(dest);let videos=[],broll=[],urls=[],sources=[],recorded=[],rec,stream,runner,wake,done=false,started=false;
+let seq=sequence(clips),total=seq.reduce((n,c)=>n+c.length,0);if(!seq.length)throw Error('Select at least one main clip.');let Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)throw Error('Web Audio is unavailable.');let ac=new Audio();await ac.resume();let dest=ac.createMediaStreamDestination(),mainGain=ac.createGain(),upperGain=ac.createGain(),musicGain=ac.createGain();mainGain.connect(dest);upperGain.connect(dest);musicGain.connect(dest);let videos=[],loaded=[],broll=[],urls=[],sources=[],recorded=[],rec,stream,runner,wake,done=false,started=false;
 let offscreen=document.createElement('canvas'),renderer;
 try{const proxy=options.analysisProxy;if(!proxy){renderer=new LookRenderer(offscreen);renderer.setLUT(options.look?lut:null);}let [w,h]=renderDimensions(options.size,kit.aspect||'9:16');canvas.width=w;canvas.height=h;let ctx=canvas.getContext('2d');
-const load=async item=>{let v=document.createElement('video');v.style.cssText='position:fixed;left:-2px;bottom:-2px;width:1px;height:1px;opacity:.001;pointer-events:none';document.body.append(v);await ready(v,item.blob);urls.push(v.src);await seek(v,item.start||item.trimStart||0);return v;};
+const load=async item=>{
+ const v=document.createElement('video'),url=URL.createObjectURL(item.blob);
+ loaded.push(v);urls.push(url);
+ v.playsInline=true;v.preload='auto';
+ v.style.cssText='position:fixed;left:-2px;bottom:-2px;width:1px;height:1px;opacity:.001;pointer-events:none';
+ document.body.append(v);
+ await waitForVideo(v,'loadeddata',15000,'A source video could not load.',signal,()=>{v.src=url;v.load();});
+ await seek(v,item.start||item.trimStart||0,signal);
+ return v;
+};
 for(let item of seq){if(signal.aborted)throw Error('Render cancelled.');let video=await load(item);videos.push(video);let source=ac.createMediaElementSource(video),analyser=ac.createAnalyser();analyser.fftSize=512;source.connect(analyser);analyser.connect(mainGain);item.video=video;item.analyser=analyser;}
 for(let item of clips.filter(c=>c.role==='broll'&&c.include!==false)){let video=await load(item);video.muted=true;broll.push({...item,video,playing:false});}
 const buffer=async item=>item?.blob?ac.decodeAudioData(await item.blob.arrayBuffer()):null;
@@ -33,9 +57,16 @@ await seq[0].video.play();rec.start(500);started=true;let start=performance.now(
 if(upperBuffer){let src=ac.createBufferSource();src.buffer=upperBuffer;upperAnalyser=ac.createAnalyser();upperAnalyser.fftSize=512;src.connect(upperAnalyser);upperAnalyser.connect(upperGain);src.start(actxStart+options.voiceOffset);sources.push(src);}
 if(musicBuffer){let src=ac.createBufferSource();src.buffer=musicBuffer;src.loop=true;src.connect(musicGain);musicGain.gain.value=options.musicLevel;src.start(actxStart);sources.push(src);}
 try{wake=await navigator.wakeLock?.request('screen')}catch{}
-await new Promise((resolve,reject)=>{let active=0,stallSince=0;const tick=()=>{try{if(signal.aborted)throw Error('Render cancelled.');if(document.hidden)throw Error('Render stopped because the tab was hidden. Keep it visible while exporting.');let t=(performance.now()-start)/1000;onProgress(Math.min(1,t/total),t,total);if(t>=total){resolve();return;}let index=seq.findIndex(c=>t>=c.at&&t<c.at+c.length);if(index<0)index=seq.length-1;if(index!==active){seq[active].video.pause();active=index;seq[active].video.play().catch(reject);}let current=seq[active],visual=current.video;for(let c of broll){let length=(c.trimEnd??c.duration)-(c.trimStart||0),target=c.startAt||0;let showing=t>=target&&t<target+length;if(showing){if(!c.playing){c.video.play().catch(reject);c.playing=true;}visual=c.video;}else if(c.playing){c.video.pause();c.playing=false;}}
+await new Promise((resolve,reject)=>{let active=0,stallSince=0;
+ const cleanup=()=>{signal.removeEventListener('abort',abort);document.removeEventListener('visibilitychange',visibility);};
+ const fail=error=>{cleanup();reject(error);};
+ const abort=()=>fail(new DOMException('Render cancelled','AbortError'));
+ const visibility=()=>{if(document.hidden)fail(Error('Export stopped when ReadyTake moved to the background. Reopen Export to try again.'));};
+ signal.addEventListener('abort',abort,{once:true});
+ document.addEventListener('visibilitychange',visibility);
+ const tick=()=>{try{if(signal.aborted)throw Error('Render cancelled.');if(document.hidden)throw Error('Render stopped because the tab was hidden. Keep it visible while exporting.');let t=(performance.now()-start)/1000;onProgress(Math.min(1,t/total),t,total);if(t>=total){cleanup();resolve();return;}let index=seq.findIndex(c=>t>=c.at&&t<c.at+c.length);if(index<0)index=seq.length-1;if(index!==active){seq[active].video.pause();active=index;seq[active].video.play().catch(fail);}let current=seq[active],visual=current.video;for(let c of broll){let length=(c.trimEnd??c.duration)-(c.trimStart||0),target=c.startAt||0;let showing=t>=target&&t<target+length;if(showing){if(!c.playing){c.video.play().catch(fail);c.playing=true;}visual=c.video;}else if(c.playing){c.video.pause();c.playing=false;}}
 if(visual.readyState<2){stallSince||=performance.now();if(performance.now()-stallSince>1500)throw Error('Playback stalled during rendering. Try fewer clips or a lower output size.');}else{stallSince=0;if(proxy)drawProxy(visual);else paintComposition({ctx,renderer,offscreen,video:visual,w,h,kit,logo,options,time:t});}
-let gains=mixGains({mainRms:rms(current.analyser),upperRms:rms(upperAnalyser),duckVoice:options.duckVoice,duckMusic:options.duckMusic,voiceDb:options.voiceDb,musicDb:options.musicDb,musicLevel:options.musicLevel});mainGain.gain.setTargetAtTime(gains.main,ac.currentTime,gains.main < mainGain.gain.value ? .06 : .22);musicGain.gain.setTargetAtTime(gains.music,ac.currentTime,gains.music < musicGain.gain.value ? .08 : .35);runner=requestAnimationFrame(tick);}catch(e){reject(e)}};tick();});
+let gains=mixGains({mainRms:rms(current.analyser),upperRms:rms(upperAnalyser),duckVoice:options.duckVoice,duckMusic:options.duckMusic,voiceDb:options.voiceDb,musicDb:options.musicDb,musicLevel:options.musicLevel});mainGain.gain.setTargetAtTime(gains.main,ac.currentTime,gains.main < mainGain.gain.value ? .06 : .22);musicGain.gain.setTargetAtTime(gains.music,ac.currentTime,gains.music < musicGain.gain.value ? .08 : .35);runner=requestAnimationFrame(tick);}catch(e){fail(e)}};tick();});
 rec.stop();await stopped;done=true;return {blob:new Blob(recorded,{type:rec.mimeType||mime||'video/webm'}),extension:extension(rec.mimeType||mime),duration:total};
-}finally{cancelAnimationFrame(runner);for(let v of videos)v.pause();for(let b of broll)b.video.pause();for(let s of sources){try{s.stop()}catch{}}if(rec&&rec.state!=='inactive'){rec.stop();}for(let v of [...videos,...broll.map(x=>x.video)]){v.removeAttribute('src');v.load();v.remove();}for(let u of urls)URL.revokeObjectURL(u);stream?.getTracks().forEach(t=>t.stop());await ac.close();try{await wake?.release()}catch{}}
+}finally{cancelAnimationFrame(runner);for(let v of videos)v.pause();for(let b of broll)b.video.pause();for(let s of sources){try{s.stop()}catch{}}if(rec&&rec.state!=='inactive'){rec.stop();}for(let v of loaded){v.removeAttribute('src');v.load();v.remove();}for(let u of urls)URL.revokeObjectURL(u);stream?.getTracks().forEach(t=>t.stop());await ac.close();try{await wake?.release()}catch{}}
 }
