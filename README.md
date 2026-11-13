@@ -1,6 +1,6 @@
 # ReadyTake — Working browser prototype v0.1
 
-A static, dependency-free camera app prepared for GitHub Pages. This is working source code, distinct from the earlier simulated UI prototype. No build step or account is required for recording and manual editing. Optional AI Assist uses a user-supplied Gemini API key.
+A static, dependency-free camera app prepared for GitHub Pages. This is working source code, distinct from the earlier simulated UI prototype. No build step or account is required for recording and manual editing. Optional AI Assist accepts user-supplied Gemini, OpenAI or Claude API keys; the last two require the local launch below.
 
 ## Put it on GitHub Pages
 
@@ -53,19 +53,28 @@ Open **Your timeline** in navigation, or the **Your timeline** card in Clips & e
 
 ## AI Assist
 
-In **Clips & edit**, use **AI Assist** and the gear button below B-roll. The workflow covers brief/direction, hooks and script, product-note dictation, filming, selected-footage analysis, proposed cuts/B-roll/subtitles, missing shots and final preview/export. Gemini requests use the public generateContent API, with model selection loaded from the user's API account. Apple AI and the other provider choices are explicitly labelled as not connected in this browser build.
+In **Clips & edit**, use **AI Assist** and the gear button below B-roll. The workflow covers brief/direction, hooks and script, product-note dictation, filming, selected-footage analysis, proposed cuts/B-roll/subtitles, missing shots and final preview/export. Gemini requests use the public generateContent API, with model selection loaded from the user's API account. OpenAI and Claude support briefs, hooks, scripts and rough cuts from existing analysis. Video/audio analysis still uses Gemini. Apple AI needs a native app.
 
 Open AI Settings, choose Gemini, enter your own API key, load models, choose a suitable model, and save. Keys stay only in this tab's memory and are cleared on reload. They are not written into settings, kit backups or GitHub. Provider preferences and generated drafts are saved locally.
 
-Generating a script sends the brief/product notes to Google. Video analysis requires enabling footage sharing first. It sends selected footage with audio to Google; normal provider API charges and data terms apply. Larger videos are converted locally into 360-pixel, up-to-45-second analysis segments using the existing browser renderer. This conversion can take real playback time and requires a visible tab and supported canvas recording. Small original clips may be sent directly. Analysis currently supports up to 30 selected clips per run and 12 MB per uploaded segment. Cancellation preserves existing edits. Completed clip analyses are cached locally; changed trims or markers require reanalysis.
+Generating a script sends the brief/product notes to the selected provider. An edit proposal sends transcripts, clip timings, marker notes and visual descriptions to that provider. Video analysis requires enabling footage sharing first. It sends selected footage with audio to Google; normal provider API charges and data terms apply. Larger videos are converted locally into 360-pixel, up-to-45-second analysis segments using the existing browser renderer. This conversion can take real playback time and requires a visible tab and supported canvas recording. Small original clips may be sent directly. Analysis currently supports up to 30 selected clips per run and 12 MB per uploaded segment. Cancellation preserves existing edits. Completed clip analyses are cached locally; changed trims or markers require reanalysis.
+
+### OpenAI and Claude local setup
+
+1. Download or clone this repository and install Node.js 22 or later.
+2. From the ReadyTake folder run `node ai-local-server.js` and open [http://127.0.0.1:8787](http://127.0.0.1:8787) on the same computer. Keep the terminal running.
+3. Go to **Clips & edit → AI gear**, choose **OpenAI / ChatGPT** or **Anthropic Claude**, use **Get API key**, then paste the key, choose **Check key & load models**, select a model and save.
+4. To generate a rough cut, analyse the clips with Gemini in this same workspace first. Then switch to OpenAI or Claude and choose **Suggest edit using analysed footage**.
+
+The local app uses a separate browser workspace from GitHub Pages. The local helper forwards requests to the selected provider without saving keys. Provider API access and billing are separate from ordinary chatbot subscriptions. On GitHub Pages, Gemini remains available and the other options show local setup instructions.
 
 Generated timestamps, IDs, duration and caption bounds are checked before applying a proposal. A proposal that includes an inferred exclusion or a red marker is rejected. Applying a reviewed proposal creates a separate **AI cut** video slot with links to the originals, preserving the current slot. Missing B-roll can then be recorded into the new slot. Transcripts/captions and cut decisions are AI drafts; inspect them in the full preview. Speech-following remains experimental browser recognition. Music generation, NLE XML and cloud client delivery are not connected.
 
-Live Gemini requests and proxy rendering have not been verified on a physical device in this environment. Automated provider tests mock the network; no real API key was used or provider charges incurred during those tests.
+Live provider requests and proxy rendering have not been verified on a physical device in this environment. Automated provider tests mock the network; no real API key was used or provider charges incurred during those tests.
 
 ## What is not in this build
 
-- Native Apple AI and external providers other than Gemini. The Gemini workflow is an optional prototype, not a guaranteed autonomous editor.
+- Native Apple AI. The AI workflow generates drafts for review.
 - Dropbox authentication/uploads/review links, Frame.io or client approval services.
 - FCPXML/Premiere XML export. The edit manifest is JSON and is labelled as such.
 - Native shutter angle/ISO/white-balance controls on browsers that do not expose them.
@@ -75,7 +84,7 @@ Live Gemini requests and proxy rendering have not been verified on a physical de
 
 ## Storage and privacy
 
-Media and assets stay on the current device/browser origin. GitHub hosts source files only and does not receive the recordings. There are no analytics, third-party scripts or remote fonts. Optional Gemini AI Assist sends the requested brief or selected video/audio directly to Google only when invoked as described above; provider data terms apply.
+Media and assets stay on the current device/browser origin. GitHub hosts source files only and does not receive the recordings. There are no analytics, third-party scripts or remote fonts. Optional AI Assist sends task data to the selected provider only when requested, as described above; provider data terms apply.
 
 IndexedDB is not a permanent archive. Browser storage may be cleared or evicted, private browsing can restrict it, and changing the Pages URL gives a separate workspace. Download important originals and kit backups. Exporting large files uses memory; the originals ZIP is capped at 450 MB and individual clip downloads are provided.
 
@@ -119,7 +128,7 @@ Automated logic and mocked integration tests cover LUT parsing/axis mapping, SRT
 - `exporter.js`: real-time sequence rendering and audio mixing.
 - `storage.js`: IndexedDB media/assets/settings.
 - `zip.js`: dependency-free ZIP downloads.
-- `ai-service.js`, `ai-workspace.js`: optional Gemini connection, guided assist workflow and proposal validation.
+- `ai-service.js`, `ai-workspace.js`: optional Gemini, OpenAI and Claude connections, guided assist workflow and proposal validation.
 - `tests/`: automated tests, including mocked AI requests and applying proposals to separate slots.
 
 Created for Hurcan’s ReadyTake project. This package does not assign or change ownership rights.

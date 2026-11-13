@@ -7,3 +7,28 @@ test('AI edit proposals reject unknown clips, invalid trims, captions and excess
 test('analysis timestamps map back from proxies to original media',()=>{const result=validateAnalysis({transcript:[{start:1,end:3,text:'A line'}],moments:[],exclusions:[{start:4,end:5,reason:'Repeated line'}]},45,60);assert.equal(result.transcript[0].start,46);assert.equal(result.exclusions[0].end,50);assert.throws(()=>validateAnalysis({transcript:[{start:0,end:30,text:'Wrong'}]},45,60),/timestamps/)});
 test('drafts must contain a usable script and sanitise generated shot kinds',()=>{assert.throws(()=>validateDraft({script:''}),/script/);const draft=validateDraft({script:'Hello',hooks:['Hook'],shots:[{kind:'broll',description:'Product close-up'},{kind:'unknown',description:'Presenter'}]});assert.equal(draft.shots[0].kind,'broll');assert.equal(draft.shots[1].kind,'aroll')});
 test('provider errors and incomplete JSON do not create usable edits',async()=>{const previous=globalThis.fetch;try{setAIKey('session-test');globalThis.fetch=async()=>({ok:false,status:429});await assert.rejects(generateAIJson({model:'gemini-example',prompt:'x'}),/quota/);globalThis.fetch=async()=>({ok:true,json:async()=>({candidates:[{finishReason:'MAX_TOKENS',content:{parts:[{text:'{'}]}}]})});await assert.rejects(generateAIJson({model:'gemini-example',prompt:'x'}),/incomplete/);}finally{setAIKey('');globalThis.fetch=previous}});
+
+test('OpenAI and Claude route separately through the local helper, and only Gemini accepts video',async()=>{
+ const previous=globalThis.fetch,location=globalThis.location,calls=[];
+ try{
+  globalThis.location={origin:'https://carbendi.github.io'};
+  setAIKey('openai-test','openai');setAIKey('claude-test','claude');
+  globalThis.fetch=async(url,options)=>{
+   calls.push([url,options]);
+   return {ok:true,json:async()=>url.endsWith('models')?{data:[{id:'gpt-example'},{id:'gpt-image-example'}]}:url.includes('openai')?{status:'completed',output:[{type:'message',content:[{type:'output_text',text:'{"script":"OpenAI"}'}]}]}:{stop_reason:'end_turn',content:[{type:'text',text:'```json\n{"script":"Claude"}\n```'}]}};
+  };
+  await assert.rejects(listAIModels(undefined,'openai'),/local ReadyTake/);
+  assert.equal(calls.length,0);
+  globalThis.location={origin:'http://127.0.0.1:8787'};
+  assert.deepEqual((await listAIModels(undefined,'openai')).map(m=>m.id),['gpt-example']);
+  assert.equal((await generateAIJson({provider:'openai',model:'gpt-example',prompt:'Script'})).script,'OpenAI');
+  assert.equal((await generateAIJson({provider:'claude',model:'claude-example',prompt:'Script'})).script,'Claude');
+  await assert.rejects(generateAIJson({provider:'claude',model:'claude-example',prompt:'Analyse',media:{}}),/Choose Gemini/);
+  assert.equal(calls.length,3);
+  assert.deepEqual(calls.map(([url,o])=>[url,o.headers['x-readytake-key']]),[
+   ['/api/ai/openai/models','openai-test'],['/api/ai/openai/generate','openai-test'],['/api/ai/claude/generate','claude-test']
+  ]);
+  assert.equal(JSON.parse(calls[1][1].body).store,false);
+  assert.equal(JSON.parse(calls[2][1].body).messages[0].content,'Script');
+ }finally{globalThis.fetch=previous;if(location===undefined)delete globalThis.location;else globalThis.location=location;setAIKey('','openai');setAIKey('','claude');}
+});
